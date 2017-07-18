@@ -353,8 +353,23 @@
       
         
           
-            <h2 id="Instance-aware-Semantic-Segmentation-via-Multi-task-Network-Cascades"><a href="#Instance-aware-Semantic-Segmentation-via-Multi-task-Network-Cascades" class="headerlink" title="Instance-aware Semantic Segmentation via Multi-task Network Cascades"></a>Instance-aware Semantic Segmentation via Multi-task Network Cascades</h2><h3 id="Overall-Architeture"><a href="#Overall-Architeture" class="headerlink" title="Overall Architeture"></a>Overall Architeture</h3><p><img src="/2017/07/17/Instance-Segmentation/MNC.png" alt="MNC"></p>
+            <h2 id="Instance-aware-Semantic-Segmentation-via-Multi-task-Network-Cascades"><a href="#Instance-aware-Semantic-Segmentation-via-Multi-task-Network-Cascades" class="headerlink" title="Instance-aware Semantic Segmentation via Multi-task Network Cascades"></a>Instance-aware Semantic Segmentation via Multi-task Network Cascades</h2><h3 id="Overall-Architeture-3-stages"><a href="#Overall-Architeture-3-stages" class="headerlink" title="Overall Architeture(3 stages)"></a>Overall Architeture(3 stages)</h3><p><img src="/2017/07/17/Instance-Segmentation/MNC.png" alt="MNC"></p>
+<h3 id="Stage1-Regressing-Box-level-Instances-class-agnostic"><a href="#Stage1-Regressing-Box-level-Instances-class-agnostic" class="headerlink" title="Stage1: Regressing Box-level Instances(class-agnostic)"></a>Stage1: Regressing Box-level Instances(class-agnostic)</h3><pre><code>RPN network(the same as the faster rcnn&apos;s) predicts bounding box locations(4*9) and objectness scores(2*9), 
+B&lt;sub&gt;i&lt;/sub&gt; = {x&lt;sub&gt;i&lt;/sub&gt;, y&lt;sub&gt;i&lt;/sub&gt;, w&lt;sub&gt;i&lt;/sub&gt;, h&lt;sub&gt;i&lt;/sub&gt;, p&lt;sub&gt;i&lt;/sub&gt;}
+L&lt;sub&gt;1 i&lt;/sub&gt; = SmoothL1Loss(x&lt;sub&gt;i&lt;/sub&gt;, y&lt;sub&gt;i&lt;/sub&gt;, w&lt;sub&gt;i&lt;/sub&gt;, h&lt;sub&gt;i&lt;/sub&gt;) + SoftmaxLoss(p&lt;sub&gt;i&lt;/sub&gt;)
+</code></pre><h3 id="Stage2-Regressing-Mask-level-Instances"><a href="#Stage2-Regressing-Mask-level-Instances" class="headerlink" title="Stage2: Regressing Mask-level Instances"></a>Stage2: Regressing Mask-level Instances</h3><pre><code>By NMS, generate 300 proposals from  Stage1&apos;s bboxes. Given the bboexs and feature map(Conv5_3), RoI warping layer interpolates(bilinear) the features inside the bbox 
+and outputs the features(28*28), (We can get the weights relative to the pixel of Conv5_3 at (u,v), then use bilinear interpolates). A max pooling layer is then applied to produce a lower-resolution output(14*14). Following 2 fc layers generate m&lt;sup&gt;2&lt;/sup&gt; outputs, each performing binary logistic regression to the ground truth mask
+(m=28, but it is 21 in caffe code??).
 
+L&lt;sub&gt;2&lt;/sub&gt; = SigmoidEntropyLoss(mask_pred, gt)
+</code></pre><h3 id="Stage3-Categorizing-Instances"><a href="#Stage3-Categorizing-Instances" class="headerlink" title="Stage3: Categorizing Instances"></a>Stage3: Categorizing Instances</h3><pre><code>Mask-base:
+Generate mask_proposal by combining mask_pred and proposal and resize it to RoI pooled resolution(14*14). The masked feature is given by element-wise product: 
+feature_roi_mask = mask_proposal * RoI pooled, followed by the 2 fc layers.
+Box-base:
+Append 2 fc layers to the RoI pooled feature.
+Concat 2 pathways, and outputs cls_scores(21), seg_cls_scores(21) and bbox_pred(84).
+L&lt;sub&gt;3&lt;/sub&gt;&gt; = SoftmaxLoss(cls_scores) + SoftmaxLoss(seg_cls_scores) + SmoothL1Loss(bbox_pred).
+</code></pre>
           
         
       
