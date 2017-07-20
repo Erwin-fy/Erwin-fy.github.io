@@ -361,6 +361,12 @@
 
 <h3 id="Stage3-Categorizing-Instances"><a href="#Stage3-Categorizing-Instances" class="headerlink" title="Stage3: Categorizing Instances"></a>Stage3: Categorizing Instances</h3><p> Mask-base: Generate mask_proposal by combining mask_pred and proposal and resize it to RoI pooled resolution(14*14). The masked feature is given by element-wise product:<br>        feature_roi_mask = mask_proposal * RoI pooled, followed by the 2 fc layers.<br>    Box-base: Append 2 fc layers to the RoI pooled feature.<br>    Concat 2 pathways, and outputs cls_scores(21), seg_cls_scores(21) and bbox_pred(84).<br>    <strong>L<sub>3</sub> = SoftmaxLoss(cls_scores) + SoftmaxLoss(seg_cls_scores) + SmoothL1Loss(bbox_pred)</strong> </p>
 
+
+
+<h3 id="Experiments"><a href="#Experiments" class="headerlink" title="Experiments"></a>Experiments</h3><p> mAP<sup>r</sup>@0.5:63.5%<br>    mAP<sup>r</sup>@0.7:41.5%<br>    time/img: 0.36s<br></p>
+
+<p> According to the speed, it is slow. I think the main reason is the faster rcnn(RPN) model is not fast enough. And there are some fa layers.<br>    According to the mAP, due to cascades, if Stage 1 and 2 are not effective, the result will be not ideal.<br></p>
+
           
         
       
