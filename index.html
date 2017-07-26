@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Home
+            Startseite
           </a>
         </li>
       
@@ -210,7 +210,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
             
-            Categories
+            Kategorien
           </a>
         </li>
       
@@ -220,7 +220,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            Archiv
           </a>
         </li>
       
@@ -292,7 +292,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-17T10:44:45+08:00">
                 2017-07-17
@@ -313,7 +313,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -367,6 +367,17 @@
 
 <p> According to the speed, it is slow. I think the main reason is the faster rcnn model is not fast enough, and there are some fc layers.<br>    According to the mAP, due to cascades, if Stage 1 and 2 are not effective, the result will be not ideal.<br></p>
 
+
+<h2 id="Mask-R-CNN"><a href="#Mask-R-CNN" class="headerlink" title="Mask R-CNN"></a>Mask R-CNN</h2><h3 id="Core-Architecture"><a href="#Core-Architecture" class="headerlink" title="Core Architecture"></a>Core Architecture</h3><p>Faster R-CNN + RoIAlign + Mask-Branch</p>
+<h3 id="RoIPool-RoIWarp-RoIAlign"><a href="#RoIPool-RoIWarp-RoIAlign" class="headerlink" title="RoIPool RoIWarp RoIAlign"></a>RoIPool RoIWarp RoIAlign</h3><p>    Faster R-CNN produces a conv feature map with several convolutional (conv) and max pooling layers(e.g., VGG16). After RPN network, original RoI regions are maped to this       conv layer, called proposals(r,c,w,h).<br></p>
+
+<p></p><p><br>    RoIPool takes proposals as inputs and divides the h × w proposals(RoI) into an H × W grid of sub-windows of approximate size h/H × w/W. And then max-pooling or avg-pooling is applied to each sub-window. So the outputs are the feature maps with fixed size(H × W).<br></p><br>    Similar to RoIPool, RoIWarp has been discussed in MNC, adopting bilinear interpolation.<p></p>
+<p></p><p><br>    Taking alignment into consideration, RoIAlign avoid any quantization. For example, if we want to tansform a 7*7 RoI into 3*3 feature map. How to process by using RoIPool? Let the size of sub-window is <strong><em>cell(7/3)</em></strong> and the sliding stride is <strong><em>floor(7/3)</em></strong>, so these quantization cause misalignments.<br>    But with RoIAlign, we use <strong><em>(7/3)</em></strong> and compute via bilinear interpolation.</p>
+<h3 id="Loss-Multi-Task"><a href="#Loss-Multi-Task" class="headerlink" title="Loss(Multi-Task)"></a>Loss(Multi-Task)</h3><pre><code>__*L* = *L&lt;sub&gt;cls&lt;/sub&gt;* + *L&lt;sub&gt;box&lt;/sub&gt;* + *L&lt;sub&gt;mask&lt;/sub&gt;*__
+
+*L&lt;sub&gt;cls&lt;/sub&gt;* and *L&lt;sub&gt;box&lt;/sub&gt;* are the same as Faster R-CNN&apos;s.
+The mask branch has a k*m*m dimensional output and *L&lt;sub&gt;mask&lt;/sub&gt;* is only defined on the k-th mask(SigmoidEntropyLoss).
+</code></pre>
           
         
       
@@ -447,7 +458,7 @@
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
                 <span class="site-state-item-count">1</span>
-                <span class="site-state-item-name">posts</span>
+                <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
           
@@ -458,7 +469,7 @@
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
                 <span class="site-state-item-count">1</span>
-                <span class="site-state-item-name">categories</span>
+                <span class="site-state-item-name">Kategorien</span>
               </a>
             </div>
           
@@ -469,7 +480,7 @@
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
                 <span class="site-state-item-count">2</span>
-                <span class="site-state-item-name">tags</span>
+                <span class="site-state-item-name">Tags</span>
               </a>
             </div>
           
@@ -519,7 +530,7 @@
 
 
 <div class="powered-by">
-  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">

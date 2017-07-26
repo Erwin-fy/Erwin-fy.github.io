@@ -101,7 +101,7 @@
 <meta property="og:site_name" content="Blog">
 <meta property="og:description" content="Instance-aware Semantic Segmentation via Multi-task Network CascadesOverall Architeture(3 stages) Stage1: Regressing Box-level Instances(class-agnostic)    RPN network(the same as the faster rcnn’s) p">
 <meta property="og:image" content="http://yoursite.com/2017/07/17/Instance-Segmentation/MNC.png">
-<meta property="og:updated_time" content="2017-07-20T04:52:30.717Z">
+<meta property="og:updated_time" content="2017-07-26T07:47:38.151Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Instance Segmentation">
 <meta name="twitter:description" content="Instance-aware Semantic Segmentation via Multi-task Network CascadesOverall Architeture(3 stages) Stage1: Regressing Box-level Instances(class-agnostic)    RPN network(the same as the faster rcnn’s) p">
@@ -205,7 +205,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Home
+            Startseite
           </a>
         </li>
       
@@ -215,7 +215,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
             
-            Categories
+            Kategorien
           </a>
         </li>
       
@@ -225,7 +225,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            Archiv
           </a>
         </li>
       
@@ -295,7 +295,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-17T10:44:45+08:00">
                 2017-07-17
@@ -316,7 +316,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -368,6 +368,17 @@
 
 <p> According to the speed, it is slow. I think the main reason is the faster rcnn model is not fast enough, and there are some fc layers.<br>    According to the mAP, due to cascades, if Stage 1 and 2 are not effective, the result will be not ideal.<br></p>
 
+
+<h2 id="Mask-R-CNN"><a href="#Mask-R-CNN" class="headerlink" title="Mask R-CNN"></a>Mask R-CNN</h2><h3 id="Core-Architecture"><a href="#Core-Architecture" class="headerlink" title="Core Architecture"></a>Core Architecture</h3><p>Faster R-CNN + RoIAlign + Mask-Branch</p>
+<h3 id="RoIPool-RoIWarp-RoIAlign"><a href="#RoIPool-RoIWarp-RoIAlign" class="headerlink" title="RoIPool RoIWarp RoIAlign"></a>RoIPool RoIWarp RoIAlign</h3><p>    Faster R-CNN produces a conv feature map with several convolutional (conv) and max pooling layers(e.g., VGG16). After RPN network, original RoI regions are maped to this       conv layer, called proposals(r,c,w,h).<br></p>
+
+<p></p><p><br>    RoIPool takes proposals as inputs and divides the h × w proposals(RoI) into an H × W grid of sub-windows of approximate size h/H × w/W. And then max-pooling or avg-pooling is applied to each sub-window. So the outputs are the feature maps with fixed size(H × W).<br></p><br>    Similar to RoIPool, RoIWarp has been discussed in MNC, adopting bilinear interpolation.<p></p>
+<p></p><p><br>    Taking alignment into consideration, RoIAlign avoid any quantization. For example, if we want to tansform a 7*7 RoI into 3*3 feature map. How to process by using RoIPool? Let the size of sub-window is <strong><em>cell(7/3)</em></strong> and the sliding stride is <strong><em>floor(7/3)</em></strong>, so these quantization cause misalignments.<br>    But with RoIAlign, we use <strong><em>(7/3)</em></strong> and compute via bilinear interpolation.</p>
+<h3 id="Loss-Multi-Task"><a href="#Loss-Multi-Task" class="headerlink" title="Loss(Multi-Task)"></a>Loss(Multi-Task)</h3><pre><code>__*L* = *L&lt;sub&gt;cls&lt;/sub&gt;* + *L&lt;sub&gt;box&lt;/sub&gt;* + *L&lt;sub&gt;mask&lt;/sub&gt;*__
+
+*L&lt;sub&gt;cls&lt;/sub&gt;* and *L&lt;sub&gt;box&lt;/sub&gt;* are the same as Faster R-CNN&apos;s.
+The mask branch has a k*m*m dimensional output and *L&lt;sub&gt;mask&lt;/sub&gt;* is only defined on the k-th mask(SigmoidEntropyLoss).
+</code></pre>
       
     </div>
 
@@ -453,10 +464,10 @@
       
         <ul class="sidebar-nav motion-element">
           <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
-            Table of Contents
+            Inhaltsverzeichnis
           </li>
           <li class="sidebar-nav-overview" data-target="site-overview">
-            Overview
+            Übersicht
           </li>
         </ul>
       
@@ -477,7 +488,7 @@
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
                 <span class="site-state-item-count">1</span>
-                <span class="site-state-item-name">posts</span>
+                <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
           
@@ -488,7 +499,7 @@
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
                 <span class="site-state-item-count">1</span>
-                <span class="site-state-item-name">categories</span>
+                <span class="site-state-item-name">Kategorien</span>
               </a>
             </div>
           
@@ -499,7 +510,7 @@
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
                 <span class="site-state-item-count">2</span>
-                <span class="site-state-item-name">tags</span>
+                <span class="site-state-item-name">Tags</span>
               </a>
             </div>
           
@@ -533,7 +544,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Instance-aware-Semantic-Segmentation-via-Multi-task-Network-Cascades"><span class="nav-number">1.</span> <span class="nav-text">Instance-aware Semantic Segmentation via Multi-task Network Cascades</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Overall-Architeture-3-stages"><span class="nav-number">1.1.</span> <span class="nav-text">Overall Architeture(3 stages)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Stage1-Regressing-Box-level-Instances-class-agnostic"><span class="nav-number">1.2.</span> <span class="nav-text">Stage1: Regressing Box-level Instances(class-agnostic)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Stage2-Regressing-Mask-level-Instances-class-agnostic"><span class="nav-number">1.3.</span> <span class="nav-text">Stage2: Regressing Mask-level Instances(class-agnostic)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Stage3-Categorizing-Instances"><span class="nav-number">1.4.</span> <span class="nav-text">Stage3: Categorizing Instances</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Experiments"><span class="nav-number">1.5.</span> <span class="nav-text">Experiments</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Instance-aware-Semantic-Segmentation-via-Multi-task-Network-Cascades"><span class="nav-number">1.</span> <span class="nav-text">Instance-aware Semantic Segmentation via Multi-task Network Cascades</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Overall-Architeture-3-stages"><span class="nav-number">1.1.</span> <span class="nav-text">Overall Architeture(3 stages)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Stage1-Regressing-Box-level-Instances-class-agnostic"><span class="nav-number">1.2.</span> <span class="nav-text">Stage1: Regressing Box-level Instances(class-agnostic)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Stage2-Regressing-Mask-level-Instances-class-agnostic"><span class="nav-number">1.3.</span> <span class="nav-text">Stage2: Regressing Mask-level Instances(class-agnostic)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Stage3-Categorizing-Instances"><span class="nav-number">1.4.</span> <span class="nav-text">Stage3: Categorizing Instances</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Experiments"><span class="nav-number">1.5.</span> <span class="nav-text">Experiments</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Mask-R-CNN"><span class="nav-number">2.</span> <span class="nav-text">Mask R-CNN</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Core-Architecture"><span class="nav-number">2.1.</span> <span class="nav-text">Core Architecture</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RoIPool-RoIWarp-RoIAlign"><span class="nav-number">2.2.</span> <span class="nav-text">RoIPool RoIWarp RoIAlign</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Loss-Multi-Task"><span class="nav-number">2.3.</span> <span class="nav-text">Loss(Multi-Task)</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -565,7 +576,7 @@
 
 
 <div class="powered-by">
-  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">
