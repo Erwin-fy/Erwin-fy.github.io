@@ -102,7 +102,7 @@
 <meta property="og:description" content="Instance-aware Semantic Segmentation via Multi-task Network Cascades1. Overall Architeture(3 stages) 2.1    Stage1: Regressing Box-level Instances(class-agnostic)    __RPN network__(the same as the fa">
 <meta property="og:image" content="http://yoursite.com/2017/07/17/Instance-Segmentation/MNC.png">
 <meta property="og:image" content="http://yoursite.com/2017/07/17/Instance-Segmentation/DMetricL.png">
-<meta property="og:updated_time" content="2017-07-27T10:03:38.429Z">
+<meta property="og:updated_time" content="2017-07-27T10:09:06.880Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Instance Segmentation">
 <meta name="twitter:description" content="Instance-aware Semantic Segmentation via Multi-task Network Cascades1. Overall Architeture(3 stages) 2.1    Stage1: Regressing Box-level Instances(class-agnostic)    __RPN network__(the same as the fa">
@@ -399,7 +399,8 @@
     __*L<sub>cls</sub>*__ and __*L<sub>box</sub>*__ are the same as Faster R-CNN's.
     The mask branch has a __K\*m\*m__ dimensional output and __*L<sub>mask</sub>*__ is only defined on the k-th mask(SigmoidEntropyLoss). </p>
 
-<h1 id="Semantic-Instance-Segmentation-via-Deep-Metric-Learning"><a href="#Semantic-Instance-Segmentation-via-Deep-Metric-Learning" class="headerlink" title="Semantic Instance Segmentation via Deep Metric Learning"></a>Semantic Instance Segmentation via Deep Metric Learning</h1><h2 id="1-Deep-Metric-Learning"><a href="#1-Deep-Metric-Learning" class="headerlink" title="1. Deep Metric Learning"></a>1. Deep Metric Learning</h2><h3 id="1-1-Metric-Learning"><a href="#1-1-Metric-Learning" class="headerlink" title="1.1 Metric Learning"></a>1.1 Metric Learning</h3><p>    Construct a distance function and compute similarity.[Refer to this blog](http://blog.csdn.net/nehemiah_li/article/details/44230053) </p>
+<h1 id="Semantic-Instance-Segmentation-via-Deep-Metric-Learning"><a href="#Semantic-Instance-Segmentation-via-Deep-Metric-Learning" class="headerlink" title="Semantic Instance Segmentation via Deep Metric Learning"></a>Semantic Instance Segmentation via Deep Metric Learning</h1><h2 id="1-Deep-Metric-Learning"><a href="#1-Deep-Metric-Learning" class="headerlink" title="1. Deep Metric Learning"></a>1. Deep Metric Learning</h2><h3 id="1-1-Metric-Learning"><a href="#1-1-Metric-Learning" class="headerlink" title="1.1 Metric Learning"></a>1.1 Metric Learning</h3><p>    Construct a distance function and compute similarity.
+[Refer to this blog](http://blog.csdn.net/nehemiah_li/article/details/44230053) </p>
 
 <h3 id="1-2-Deep-Metric-Learning"><a href="#1-2-Deep-Metric-Learning" class="headerlink" title="1.2 Deep Metric Learning"></a>1.2 Deep Metric Learning</h3><p>    In this paper, based on the deep fully conv embedding model, compute how likely two pixels are to belong to the same object and group similar pixels.  </p>
 
