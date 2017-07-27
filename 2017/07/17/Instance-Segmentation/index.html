@@ -102,7 +102,7 @@
 <meta property="og:description" content="Instance-aware Semantic Segmentation via Multi-task Network Cascades1. Overall Architeture(3 stages) 2.1    Stage1: Regressing Box-level Instances(class-agnostic)    __RPN network__(the same as the fa">
 <meta property="og:image" content="http://yoursite.com/2017/07/17/Instance-Segmentation/MNC.png">
 <meta property="og:image" content="http://yoursite.com/2017/07/17/Instance-Segmentation/DMetricL.png">
-<meta property="og:updated_time" content="2017-07-27T10:12:44.655Z">
+<meta property="og:updated_time" content="2017-07-27T10:15:42.572Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Instance Segmentation">
 <meta name="twitter:description" content="Instance-aware Semantic Segmentation via Multi-task Network Cascades1. Overall Architeture(3 stages) 2.1    Stage1: Regressing Box-level Instances(class-agnostic)    __RPN network__(the same as the fa">
@@ -405,7 +405,7 @@
 <h3 id="1-2-Deep-Metric-Learning"><a href="#1-2-Deep-Metric-Learning" class="headerlink" title="1.2 Deep Metric Learning"></a>1.2 Deep Metric Learning</h3><p>    In this paper, based on the deep fully conv embedding model, compute how likely two pixels are to belong to the same object and group similar pixels.  </p>
 
 <h2 id="2-Overall-Architecture"><a href="#2-Overall-Architecture" class="headerlink" title="2. Overall Architecture"></a>2. Overall Architecture</h2><p><img src="/2017/07/17/Instance-Segmentation/DMetricL.png" alt="DMetricL"></p>
-<h2 id="3-Model"><a href="#3-Model" class="headerlink" title="3. Model"></a>3. Model</h2><h3 id="3-1-Embedding-vectors"><a href="#3-1-Embedding-vectors" class="headerlink" title="3.1 Embedding vectors"></a>3.1 Embedding vectors</h3><p>    Take as input a feature map and output a $[h,w,d] tensor. Thus each pixel *p* in image is represented by *d*-dimensional embedding vector __*e<sub>p</sub>*__
+<h2 id="3-Model"><a href="#3-Model" class="headerlink" title="3. Model"></a>3. Model</h2><h3 id="3-1-Embedding-vectors"><a href="#3-1-Embedding-vectors" class="headerlink" title="3.1 Embedding vectors"></a>3.1 Embedding vectors</h3><p>    Take as input a feature map and output a $[h,w,d]$ tensor. Thus each pixel *p* in image is represented by *d*-dimensional embedding vector __*e<sub>p</sub>*__
     Define the similarity between pixels *p* and *q* as Equation(1) and then define the loss function __*L<sub>e</sub>*__(similar to logistic regression)  </p>
 
 <h3 id="3-2-Creating-masks"><a href="#3-2-Creating-masks" class="headerlink" title="3.2 Creating masks"></a>3.2 Creating masks</h3><p>    Each pixel *p* will generate a mask if picked as a seed, by finding all the other pixels *q* that have a similarity with *p* greater than a threshold \tau.
