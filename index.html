@@ -353,82 +353,43 @@
       
         
           
-            <h1 id="instance-aware-semantic-segmentation-via-multi-task-network-cascades">Instance-aware Semantic Segmentation via Multi-task Network Cascades</h1>
-<h2 id="overall-architeture3-stages">1. Overall Architeture(3 stages)</h2>
-<div class="figure">
-<img src="/2017/07/17/Instance-Segmentation/MNC.png" alt="MNC">
-<p class="caption">MNC</p>
-</div>
-<h2 id="stage1-regressing-box-level-instancesclass-agnostic">2.1 Stage1: Regressing Box-level Instances(class-agnostic)</h2>
-<p>
-<strong>RPN network</strong>(the same as the faster rcnn’s) predicts bounding box locations(<em>4*9</em>) and objectness scores(__2*9__). For the bbox i, let B<sub>i</sub> = {x<sub>i</sub>, y<sub>i</sub>, w<sub>i</sub>, h<sub>i</sub>, p<sub>i</sub>} <strong>L<sub>1 i</sub> = SmoothL1Loss(x<sub>i</sub>, y<sub>i</sub>, w<sub>i</sub>, h<sub>i</sub>) + SoftmaxLoss(p<sub>i</sub>)</strong>
-</p>
-<h2 id="stage2-regressing-mask-level-instancesclass-agnostic">2.2 Stage2: Regressing Mask-level Instances(class-agnostic)</h2>
-<p>
-Generate 300 proposals from Stage1’s bboxes via <strong>NMS</strong>. Given the bboexs and feature map(Conv5_3), RoI warping layer interpolates(bilinear) the features inside the bbox and outputs the features(28*28), (We can get the weights relative to the pixel of Conv5_3 at (u,v), then use bilinear interpolates). A max pooling layer is then applied to produce a lower-resolution output(14*14). Following 2 fc layers generate m<sup>2</sup> outputs, each performing binary logistic regression to the ground truth mask(m=28, but it is 21 in caffe code??). <strong>L<sub>2</sub> = SigmoidEntropyLoss(mask_pred, gt)</strong>
-</p>
-<h2 id="stage3-categorizing-instances">2.3 Stage3: Categorizing Instances</h2>
-<p>
-Mask-base: Generate mask_proposal by combining mask_pred and proposal and resize it to RoI pooled resolution(14*14). The masked feature is given by element-wise product: feature_roi_mask = mask_proposal * RoI pooled, followed by the 2 fc layers. Box-base: Append 2 fc layers to the RoI pooled feature. Concat 2 pathways, and outputs cls_scores(21), seg_cls_scores(21) and bbox_pred(84). <strong>L<sub>3</sub> = SoftmaxLoss(cls_scores) + SoftmaxLoss(seg_cls_scores) + SmoothL1Loss(bbox_pred)</strong>
-</p>
-<h2 id="experiments">3. Experiments</h2>
-<p>
-mAP<sup>r</sup><span class="citation">@0.5:63.5</span>% mAP<sup>r</sup><span class="citation">@0.7:41.5</span>% time/img: 0.36s
-</p>
-<p>
-According to the speed, it is slow. I think the main reason is the faster rcnn model is not fast enough, and there are some fc layers. According to the mAP, due to cascades, if Stage 1 and 2 are not effective, the result will be not ideal.
-</p>
+            <h1 id="Instance-aware-Semantic-Segmentation-via-Multi-task-Network-Cascades"><a href="#Instance-aware-Semantic-Segmentation-via-Multi-task-Network-Cascades" class="headerlink" title="Instance-aware Semantic Segmentation via Multi-task Network Cascades"></a>Instance-aware Semantic Segmentation via Multi-task Network Cascades</h1><h2 id="1-Overall-Architeture-3-stages"><a href="#1-Overall-Architeture-3-stages" class="headerlink" title="1. Overall Architeture(3 stages)"></a>1. Overall Architeture(3 stages)</h2><p><img src="/2017/07/17/Instance-Segmentation/MNC.png" alt="MNC"></p>
+<h2 id="2-1-Stage1-Regressing-Box-level-Instances-class-agnostic"><a href="#2-1-Stage1-Regressing-Box-level-Instances-class-agnostic" class="headerlink" title="2.1    Stage1: Regressing Box-level Instances(class-agnostic)"></a>2.1    Stage1: Regressing Box-level Instances(class-agnostic)</h2><p>    <strong>RPN network</strong>(the same as the faster rcnn’s) predicts bounding box locations(<em>4<em>9</em>) and objectness scores(__2</em>9<strong>).<br>    For the bbox i, let B<sub>i</sub> = {x<sub>i</sub>, y<sub>i</sub>, w<sub>i</sub>, h<sub>i</sub>, p<sub>i</sub>}
+    </strong>L<sub>1 i</sub> = SmoothL1Loss(x<sub>i</sub>, y<sub>i</sub>, w<sub>i</sub>, h<sub>i</sub>) + SoftmaxLoss(p<sub>i</sub>)__ </p>
+
+<h2 id="2-2-Stage2-Regressing-Mask-level-Instances-class-agnostic"><a href="#2-2-Stage2-Regressing-Mask-level-Instances-class-agnostic" class="headerlink" title="2.2 Stage2: Regressing Mask-level Instances(class-agnostic)"></a>2.2 Stage2: Regressing Mask-level Instances(class-agnostic)</h2><p> Generate 300 proposals from  Stage1’s bboxes via <strong>NMS</strong>. Given the bboexs and feature map(Conv5_3), RoI warping layer interpolates(bilinear) the features inside the bbox and outputs the features(28*28), (We can get the weights relative to the pixel of Conv5_3 at (u,v), then use bilinear interpolates).<br>    A max pooling layer is then applied to produce a lower-resolution output(14*14).<br>    Following 2 fc layers generate m<sup>2</sup> outputs, each performing binary logistic regression to the ground truth mask(m=28, but it is 21 in caffe code??).<br>    <strong>L<sub>2</sub> = SigmoidEntropyLoss(mask_pred, gt)</strong> </p>
+
+
+<h2 id="2-3-Stage3-Categorizing-Instances"><a href="#2-3-Stage3-Categorizing-Instances" class="headerlink" title="2.3 Stage3: Categorizing Instances"></a>2.3 Stage3: Categorizing Instances</h2><p> Mask-base: Generate mask_proposal by combining mask_pred and proposal and resize it to RoI pooled resolution(14*14). The masked feature is given by element-wise product:<br>        feature_roi_mask = mask_proposal * RoI pooled, followed by the 2 fc layers.<br>    Box-base: Append 2 fc layers to the RoI pooled feature.<br>    Concat 2 pathways, and outputs cls_scores(21), seg_cls_scores(21) and bbox_pred(84).<br>    <strong>L<sub>3</sub> = SoftmaxLoss(cls_scores) + SoftmaxLoss(seg_cls_scores) + SmoothL1Loss(bbox_pred)</strong> </p>
+
+
+
+<h2 id="3-Experiments"><a href="#3-Experiments" class="headerlink" title="3. Experiments"></a>3. Experiments</h2><p> mAP<sup>r</sup>@0.5:63.5%<br>    mAP<sup>r</sup>@0.7:41.5%<br>    time/img: 0.36s<br></p>
+
+<p> According to the speed, it is slow. I think the main reason is the faster rcnn model is not fast enough, and there are some fc layers.<br>    According to the mAP, due to cascades, if Stage 1 and 2 are not effective, the result will be not ideal.<br></p>
+
 <hr>
-<h1 id="mask-r-cnn">Mask R-CNN</h1>
-<h2 id="core-architecture">1. Core Architecture</h2>
-<p>Faster R-CNN + RoIAlign + Mask-Branch</p>
-<h2 id="roipool-roiwarp-roialign">2. RoIPool RoIWarp RoIAlign</h2>
-<p>
-</p><p>Faster R-CNN produces a conv feature map with several convolutional (conv) and max pooling layers(e.g., VGG16). After RPN network, original RoI regions are maped to this conv layer, called proposals(r,c,w,h).</p>
-<pre><code>RoIPool takes proposals as inputs and divides the h × w proposals(RoI) into an H × W grid of sub-windows of approximate size h/H × w/W. And then max-pooling or         avg-pooling is applied to each sub-window. So the outputs are the feature maps with fixed size (H × W).
+<h1 id="Mask-R-CNN"><a href="#Mask-R-CNN" class="headerlink" title="Mask R-CNN"></a>Mask R-CNN</h1><h2 id="1-Core-Architecture"><a href="#1-Core-Architecture" class="headerlink" title="1. Core Architecture"></a>1. Core Architecture</h2><p>Faster R-CNN + RoIAlign + Mask-Branch</p>
+<h2 id="2-RoIPool-RoIWarp-RoIAlign"><a href="#2-RoIPool-RoIWarp-RoIAlign" class="headerlink" title="2. RoIPool RoIWarp RoIAlign"></a>2. RoIPool RoIWarp RoIAlign</h2><p>    Faster R-CNN produces a conv feature map with several convolutional (conv) and max pooling layers(e.g., VGG16). After RPN network, original RoI regions are maped to this       conv layer, called proposals(r,c,w,h).<br><br>    RoIPool takes proposals as inputs and divides the h × w proposals(RoI) into an H × W grid of sub-windows of approximate size h/H × w/W. And then max-pooling or         avg-pooling is applied to each sub-window. So the outputs are the feature maps with fixed size (H × W).<br><br>    Similar to RoIPool, RoIWarp has been discussed in MNC, adopting bilinear interpolation.<br><br>    Taking alignment into consideration, RoIAlign avoid any quantization. For example, if we want to tansform a 7*7 RoI into 3*3 feature map. How to process by using RoIPool? Let the size of sub-window is <strong><em>cell(7/3)</em></strong> and the sliding stride is <strong><em>floor(7/3)</em></strong>, so these quantization cause misalignments.<br>    But with RoIAlign, we use <strong><em>(7/3)</em></strong> and compute via bilinear interpolation. </p>
 
-Similar to RoIPool, RoIWarp has been discussed in MNC, adopting bilinear interpolation.
+<h2 id="3-Loss-Multi-Task"><a href="#3-Loss-Multi-Task" class="headerlink" title="3. Loss(Multi-Task)"></a>3. Loss(Multi-Task)</h2><p>    <strong><em>L</em> = <em>L<sub>cls</sub></em> + <em>L<sub>box</sub></em> + <em>L<sub>mask</sub></em></strong><br><br>    <strong><em>L<sub>cls</sub></em></strong> and <strong><em>L<sub>box</sub></em></strong> are the same as Faster R-CNN’s.<br>    The mask branch has a <strong>K*m*m</strong> dimensional output and <strong><em>L<sub>mask</sub></em></strong> is only defined on the k-th mask(SigmoidEntropyLoss). </p>
 
-Taking alignment into consideration, RoIAlign avoid any quantization. For example, if we want to tansform a 7\*7 RoI into 3\*3 feature map. How to process by using RoIPool? Let the size of sub-window is ***cell(7/3)*** and the sliding stride is ***floor(7/3)***, so these quantization cause misalignments.
-But with RoIAlign, we use ***(7/3)*** and compute via bilinear interpolation. &lt;/p&gt;</code></pre>
-<h2 id="lossmulti-task">3. Loss(Multi-Task)</h2>
-<p>
-</p><p><strong><em>L</em> = <em>L<sub>cls</sub></em> + <em>L<sub>box</sub></em> + <em>L<sub>mask</sub></em></strong></p>
-<pre><code>__*L&lt;sub&gt;cls&lt;/sub&gt;*__ and __*L&lt;sub&gt;box&lt;/sub&gt;*__ are the same as Faster R-CNN&#39;s.
-The mask branch has a __K\*m\*m__ dimensional output and __*L&lt;sub&gt;mask&lt;/sub&gt;*__ is only defined on the k-th mask(SigmoidEntropyLoss). &lt;/p&gt;</code></pre>
+
 <hr>
-<h1 id="semantic-instance-segmentation-via-deep-metric-learning">Semantic Instance Segmentation via Deep Metric Learning</h1>
-<h2 id="deep-metric-learning">1. Deep Metric Learning</h2>
-<h3 id="metric-learning">1.1 Metric Learning</h3>
-<p>
-</p><p>Construct a distance function and compute similarity.</p>
-<pre><code>[Refer to this blog](http://blog.csdn.net/nehemiah_li/article/details/44230053) &lt;/p&gt;</code></pre>
-<h3 id="deep-metric-learning-1">1.2 Deep Metric Learning</h3>
-<p>
-In this paper, based on the deep fully conv embedding model, compute how likely two pixels are to belong to the same object and group similar pixels.
-</p>
-<h2 id="overall-architecture">2. Overall Architecture</h2>
-<div class="figure">
-<img src="/2017/07/17/Instance-Segmentation/DMetricL.png" alt="DMetricL">
-<p class="caption">DMetricL</p>
-</div>
-<h2 id="model">3. Model</h2>
-<h3 id="embedding-vectors">3.1 Embedding vectors</h3>
-<p>
-Take as input a feature map and output a <span class="math inline">\([h,w,d]\)</span> tensor. Thus each pixel <span class="math inline">\(p\)</span> in image is represented by <span class="math inline">\(d\)</span>-dimensional embedding vector <span class="math inline">\(\emph{e&lt;sub&gt;p&lt;/sub&gt;}\)</span> Define the similarity between pixels <em>p</em> and <em>q</em> as Equation(1) and then define the loss function <strong><em>L<sub>e</sub></em></strong>(similar to logistic regression)
-</p>
-<h3 id="creating-masks">3.2 Creating masks</h3>
-<p>
-Each pixel <em>p</em> will generate a mask if picked as a seed, by finding all the other pixels <span class="math inline">\(q\)</span> that have a similarity with <span class="math inline">\(p\)</span> greater than a threshold <span class="math inline">\(\tau\)</span>. <strong><span class="math inline">\(mask(p, \tau) = {q: \sigma(p, q) \geq \tao}\)</span></strong>
-</p>
-<h3 id="classification">3.3 Classification</h3>
-<p>
-The model also takes as input a feature map and outputs a [h,w,C+1] tensor, predicting the class of each mask generated by each pixel. We can get <strong><em>L<sub>cls</sub></em></strong> using softmax cross-entropy loss. And the ground truth label is assigned to the pixel <em>p</em> via IoU threshold between the proposed mask and ground truth masks.
-</p>
-<h3 id="seediness">3.4 Seediness</h3>
-<h3 id="choose-the-seeds">3.5 Choose the seeds</h3>
-<pre><code>According to &#39;Seediness&#39; heatmap S&lt;sub&gt;p&lt;/s&gt; and Section 3.3 in the paper, we can choose good seeds. Then we will attain the mask and confidence score around the seeds.</code></pre>
+<h1 id="Semantic-Instance-Segmentation-via-Deep-Metric-Learning"><a href="#Semantic-Instance-Segmentation-via-Deep-Metric-Learning" class="headerlink" title="Semantic Instance Segmentation via Deep Metric Learning"></a>Semantic Instance Segmentation via Deep Metric Learning</h1><h2 id="1-Deep-Metric-Learning"><a href="#1-Deep-Metric-Learning" class="headerlink" title="1. Deep Metric Learning"></a>1. Deep Metric Learning</h2><h3 id="1-1-Metric-Learning"><a href="#1-1-Metric-Learning" class="headerlink" title="1.1 Metric Learning"></a>1.1 Metric Learning</h3><p>    Construct a distance function and compute similarity.<br><br>    <a href="http://blog.csdn.net/nehemiah_li/article/details/44230053" target="_blank" rel="external">Refer to this blog</a> </p>
 
+<h3 id="1-2-Deep-Metric-Learning"><a href="#1-2-Deep-Metric-Learning" class="headerlink" title="1.2 Deep Metric Learning"></a>1.2 Deep Metric Learning</h3><p>    In this paper, based on the deep fully conv embedding model, compute how likely two pixels are to belong to the same object and group similar pixels.  </p>
+
+<h2 id="2-Overall-Architecture"><a href="#2-Overall-Architecture" class="headerlink" title="2. Overall Architecture"></a>2. Overall Architecture</h2><p><img src="/2017/07/17/Instance-Segmentation/DMetricL.png" alt="DMetricL"></p>
+<h2 id="3-Model"><a href="#3-Model" class="headerlink" title="3. Model"></a>3. Model</h2><h3 id="3-1-Embedding-vectors"><a href="#3-1-Embedding-vectors" class="headerlink" title="3.1 Embedding vectors"></a>3.1 Embedding vectors</h3><p>    Take as input a feature map and output a $[h,w,d]$ tensor. Thus each pixel $p$ in image is represented by $d$-dimensional embedding vector $\emph{e<sub>p</sub>}$<br>    Define the similarity between pixels <em>p</em> and <em>q</em> as Equation(1) and then define the loss function <strong><em>L<sub>e</sub></em></strong>(similar to logistic regression)  </p>
+
+<h3 id="3-2-Creating-masks"><a href="#3-2-Creating-masks" class="headerlink" title="3.2 Creating masks"></a>3.2 Creating masks</h3><p>    Each pixel <em>p</em> will generate a mask if picked as a seed, by finding all the other pixels $q$ that have a similarity with $p$ greater than a threshold $\tau$.<br>    <strong>$mask(p, \tau) = {q: \sigma(p, q) \geq \tao}$</strong>  </p>
+
+
+<h3 id="3-3-Classification"><a href="#3-3-Classification" class="headerlink" title="3.3 Classification"></a>3.3 Classification</h3><p>     The model also takes as input a feature map and outputs a [h,w,C+1] tensor, predicting the class of each mask generated by each pixel. We can get <strong><em>L<sub>cls</sub></em></strong>     using softmax cross-entropy loss. And the ground truth label is assigned to the pixel <em>p</em> via IoU threshold between the proposed mask and ground truth masks. </p>
+
+<h3 id="3-4-Seediness"><a href="#3-4-Seediness" class="headerlink" title="3.4 Seediness"></a>3.4 Seediness</h3><h3 id="3-5-Choose-the-seeds"><a href="#3-5-Choose-the-seeds" class="headerlink" title="3.5 Choose the seeds"></a>3.5 Choose the seeds</h3><pre><code>According to &apos;Seediness&apos; heatmap S&lt;sub&gt;p&lt;/s&gt; and Section 3.3 in the paper, we can choose good seeds. Then we will attain the mask and confidence score around the seeds.
+</code></pre>
           
         
       
