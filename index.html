@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Home
+            Startseite
           </a>
         </li>
       
@@ -210,7 +210,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
             
-            Categories
+            Kategorien
           </a>
         </li>
       
@@ -220,7 +220,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archives
+            Archiv
           </a>
         </li>
       
@@ -292,7 +292,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Posted on</span>
+                <span class="post-meta-item-text">Veröffentlicht am</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-17T10:44:45+08:00">
                 2017-07-17
@@ -313,7 +313,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">In</span>
+                <span class="post-meta-item-text">in</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -354,9 +354,9 @@
         
           
             <h1 id="Instance-aware-Semantic-Segmentation-via-Multi-task-Network-Cascades"><a href="#Instance-aware-Semantic-Segmentation-via-Multi-task-Network-Cascades" class="headerlink" title="Instance-aware Semantic Segmentation via Multi-task Network Cascades"></a>Instance-aware Semantic Segmentation via Multi-task Network Cascades</h1><h2 id="1-Overall-Architeture-3-stages"><a href="#1-Overall-Architeture-3-stages" class="headerlink" title="1. Overall Architeture(3 stages)"></a>1. Overall Architeture(3 stages)</h2><p><img src="/2017/07/17/Instance-Segmentation/MNC.png" alt="MNC"></p>
-<h2 id="2-1-Stage1-Regressing-Box-level-Instances-class-agnostic"><a href="#2-1-Stage1-Regressing-Box-level-Instances-class-agnostic" class="headerlink" title="2.1    Stage1: Regressing Box-level Instances(class-agnostic)"></a>2.1    Stage1: Regressing Box-level Instances(class-agnostic)</h2><p>    <strong>RPN network</strong>(the same as the faster rcnn’s) predicts bounding box locations(<strong>4*9</strong>) and objectness scores(<strong>2*9</strong>).<br>    For the bbox $i$, let $B<sub>i</sub> = {x<sub>i</sub>, y<sub>i</sub>, w<sub>i</sub>, h<sub>i</sub>, p<sub>i</sub>}$,<br>    <strong>$L<sub>1 i</sub> = SmoothL1Loss(x<sub>i</sub>, y<sub>i</sub>, w<sub>i</sub>, h<sub>i</sub>) + SoftmaxLoss(p<sub>i</sub>)$</strong> </p>
+<h2 id="2-1-Stage1-Regressing-Box-level-Instances-class-agnostic"><a href="#2-1-Stage1-Regressing-Box-level-Instances-class-agnostic" class="headerlink" title="2.1    Stage1: Regressing Box-level Instances(class-agnostic)"></a>2.1    Stage1: Regressing Box-level Instances(class-agnostic)</h2><p>    <strong>RPN network</strong>(the same as the faster rcnn’s) predicts bounding box locations(<strong>4*9</strong>) and objectness scores(<strong>2*9</strong>).<br>    For the bbox $i$, let $B<sub>i</sub> = {x<sub>i</sub>, y<sub>i</sub>, w<sub>i</sub>, h<sub>i</sub>, p<sub>i</sub>}$,<br>    $<strong>L<sub>1 i</sub> = SmoothL1Loss(x<sub>i</sub>, y<sub>i</sub>, w<sub>i</sub>, h<sub>i</sub>) + SoftmaxLoss(p<sub>i</sub>)</strong>$ </p>
 
-<h2 id="2-2-Stage2-Regressing-Mask-level-Instances-class-agnostic"><a href="#2-2-Stage2-Regressing-Mask-level-Instances-class-agnostic" class="headerlink" title="2.2 Stage2: Regressing Mask-level Instances(class-agnostic)"></a>2.2 Stage2: Regressing Mask-level Instances(class-agnostic)</h2><p> Generate 300 proposals from  Stage1’s bboxes via <strong>NMS</strong>. Given the bboexs and feature map(Conv5_3), RoI warping layer interpolates(bilinear) the features inside the bbox and outputs the features(28*28), (We can get the weights relative to the pixel of Conv5_3 at (u,v), then use bilinear interpolates).<br>    A max pooling layer is then applied to produce a lower-resolution output(14*14).<br>    Following 2 fc layers generate m<sup>2</sup> outputs, each performing binary logistic regression to the ground truth mask(m=28, but it is 21 in caffe code??).<br>    <strong>$L<sub>2</sub> = SigmoidEntropyLoss(mask_pred, gt)$</strong> </p>
+<h2 id="2-2-Stage2-Regressing-Mask-level-Instances-class-agnostic"><a href="#2-2-Stage2-Regressing-Mask-level-Instances-class-agnostic" class="headerlink" title="2.2 Stage2: Regressing Mask-level Instances(class-agnostic)"></a>2.2 Stage2: Regressing Mask-level Instances(class-agnostic)</h2><p> Generate 300 proposals from  Stage1’s bboxes via <strong>NMS</strong>. Given the bboexs and feature map(Conv5_3), RoI warping layer interpolates(bilinear) the features inside the bbox and outputs the features(28*28), (We can get the weights relative to the pixel of Conv5_3 at (u,v), then use bilinear interpolates).<br>    A max pooling layer is then applied to produce a lower-resolution output(14*14).<br>    Following 2 fc layers generate m<sup>2</sup> outputs, each performing binary logistic regression to the ground truth mask(m=28, but it is 21 in caffe code??).<br>    $<strong>L<sub>2</sub> = SigmoidEntropyLoss(mask_pred, gt)</strong>$ </p>
 
 
 <h2 id="2-3-Stage3-Categorizing-Instances"><a href="#2-3-Stage3-Categorizing-Instances" class="headerlink" title="2.3 Stage3: Categorizing Instances"></a>2.3 Stage3: Categorizing Instances</h2><p> Mask-base: Generate mask_proposal by combining mask_pred and proposal and resize it to RoI pooled resolution(14*14). The masked feature is given by element-wise product:<br>        feature_roi_mask = mask_proposal * RoI pooled, followed by the 2 fc layers.<br>    Box-base: Append 2 fc layers to the RoI pooled feature.<br>    Concat 2 pathways, and outputs cls_scores(21), seg_cls_scores(21) and bbox_pred(84).<br>    <strong>$L<sub>3</sub> = SoftmaxLoss(cls_scores) + SoftmaxLoss(seg_cls_scores) + SmoothL1Loss(bbox_pred)$</strong> </p>
@@ -468,7 +468,7 @@
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
                 <span class="site-state-item-count">1</span>
-                <span class="site-state-item-name">posts</span>
+                <span class="site-state-item-name">Artikel</span>
               </a>
             </div>
           
@@ -479,7 +479,7 @@
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
                 <span class="site-state-item-count">1</span>
-                <span class="site-state-item-name">categories</span>
+                <span class="site-state-item-name">Kategorien</span>
               </a>
             </div>
           
@@ -490,7 +490,7 @@
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
                 <span class="site-state-item-count">2</span>
-                <span class="site-state-item-name">tags</span>
+                <span class="site-state-item-name">Tags</span>
               </a>
             </div>
           
@@ -540,7 +540,7 @@
 
 
 <div class="powered-by">
-  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">
