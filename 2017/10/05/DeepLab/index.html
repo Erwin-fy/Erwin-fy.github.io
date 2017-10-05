@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="DeepLabAbstract: Deep Convolutional Nets &amp;#160; Atrous Convolution &amp;#160; Fully Connected CRFs Link 1. Overall Archetecture 2. Models2.1 DCNN &amp;amp;&amp;amp; Atrous Convolution DCNN  We adopt VGG16 and Res">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Weakly Supervised Learning for Classification, Localization and Segmentation">
+<meta property="og:url" content="http://yoursite.com/2017/10/05/DeepLab/index.html">
+<meta property="og:site_name" content="Blog">
+<meta property="og:description" content="DeepLabAbstract: Deep Convolutional Nets &amp;#160; Atrous Convolution &amp;#160; Fully Connected CRFs Link 1. Overall Archetecture 2. Models2.1 DCNN &amp;amp;&amp;amp; Atrous Convolution DCNN  We adopt VGG16 and Res">
+<meta property="og:image" content="http://yoursite.com/2017/10/05/DeepLab/DeepLab.png">
+<meta property="og:image" content="http://yoursite.com/2017/10/05/DeepLab/origin.png">
+<meta property="og:image" content="http://yoursite.com/2017/10/05/DeepLab/sparse.png">
+<meta property="og:image" content="http://yoursite.com/2017/10/05/DeepLab/dense.png">
+<meta property="og:updated_time" content="2017-10-05T14:14:59.233Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Weakly Supervised Learning for Classification, Localization and Segmentation">
+<meta name="twitter:description" content="DeepLabAbstract: Deep Convolutional Nets &amp;#160; Atrous Convolution &amp;#160; Fully Connected CRFs Link 1. Overall Archetecture 2. Models2.1 DCNN &amp;amp;&amp;amp; Atrous Convolution DCNN  We adopt VGG16 and Res">
+<meta name="twitter:image" content="http://yoursite.com/2017/10/05/DeepLab/DeepLab.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/10/05/DeepLab/"/>
+
+
+
+
+
+  <title>Weakly Supervised Learning for Classification, Localization and Segmentation | Blog</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">blog</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-categories " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/05/DeepLab/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Erwin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Weakly Supervised Learning for Classification, Localization and Segmentation</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-05T22:15:38+08:00">
+                2017-10-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="DeepLab"><a href="#DeepLab" class="headerlink" title="DeepLab"></a>DeepLab</h2><p><strong>Abstract</strong>: <strong>Deep Convolutional Nets &#160; Atrous Convolution &#160; Fully Connected CRFs</strong></p>
+<p><a href="https://arxiv.org/pdf/1606.00915.pdf" target="_blank" rel="external">Link</a></p>
+<h3 id="1-Overall-Archetecture"><a href="#1-Overall-Archetecture" class="headerlink" title="1. Overall Archetecture"></a>1. Overall Archetecture</h3><p><img src="/2017/10/05/DeepLab/DeepLab.png" alt="DeepLab"></p>
+<h3 id="2-Models"><a href="#2-Models" class="headerlink" title="2. Models"></a>2. Models</h3><h4 id="2-1-DCNN-amp-amp-Atrous-Convolution"><a href="#2-1-DCNN-amp-amp-Atrous-Convolution" class="headerlink" title="2.1 DCNN &amp;&amp; Atrous Convolution"></a>2.1 DCNN &amp;&amp; Atrous Convolution</h4><ul>
+<li><p><strong><em>DCNN</em></strong></p>
+<p> We adopt <strong><em>VGG16</em></strong> and <strong><em>ResNet101</em></strong> to extract feature. And we repalce their fully-connected layers with fully-convolutional layers.</p>
+</li>
+<li><p><strong><em>Atrous Convolution</em></strong></p>
+<p>Atrous Convolution allows us to compute feature maps more densely and enlarge the $field-of-view$ of filters.</p>
+
+</li>
+</ul>
+<p>First, consider one-dimensional signals.<br><img src="/2017/10/05/DeepLab/origin.png" alt="Original Structure"><br><img src="/2017/10/05/DeepLab/sparse.png" alt="Sparse Structure"><br><img src="/2017/10/05/DeepLab/dense.png" alt="Dense Structure"></p>
+<p>Obviously. we can see <strong><em>Atrous Convolution</em></strong> helps to resize a 3-dimensional filter to a 5-dimensional one, in fact. Compared with <strong><em>Original Structure</em></strong>, we attain mere resolution enhancement due to 1 stride in <strong>MAX Pooling Layer</strong>. Compared with <strong><em>Sparse Structure</em></strong>, the field-of-view of filters can be enlarged to the same as <strong><em>Original Structure</em></strong>.</p>
+<p>By the way, when dilation=1(rate is refered to as dilation in papaer), <strong><em>Dense Structure</em></strong> and <strong><em>Sparse Structure</em></strong> are the same.</p>
+<p>In conclusion, given a $k<em>k$ filter, Atrous Convolution can enlarge the kernel size from $k$ to $k_e=k + (k-1)</em>(dilation-1)$ without increasing the number of parameters.</p>
+<h4 id="2-2-Atrous-Spatial-Pyramid-Pooling-2-approaches"><a href="#2-2-Atrous-Spatial-Pyramid-Pooling-2-approaches" class="headerlink" title="2.2 Atrous Spatial Pyramid Pooling(2 approaches)"></a>2.2 Atrous Spatial Pyramid Pooling(2 approaches)</h4><h5 id="2-2-1-Standard-MultiScale-Processing"><a href="#2-2-1-Standard-MultiScale-Processing" class="headerlink" title="2.2.1 Standard MultiScale Processing"></a>2.2.1 Standard MultiScale Processing</h5><ul>
+<li>Three rescaled versions of the original image.</li>
+<li>Three parallel DCNN branches share the same parameters.</li>
+<li>Bilinearly interplote the feature maps to the original image resolution.</li>
+<li>Fuse 3 branches by taking maximum.</li>
+</ul>
+<h5 id="2-2-2-Different-sampling-rates"><a href="#2-2-2-Different-sampling-rates" class="headerlink" title="2.2.2 Different sampling rates"></a>2.2.2 Different sampling rates</h5><ul>
+<li>Employ multiple parallel atrous convolutional filters with different rates(dilations).</li>
+<li>Fuse them by taking SUM</li>
+</ul>
+<h4 id="Let’s-take-VGG16-as-an-example"><a href="#Let’s-take-VGG16-as-an-example" class="headerlink" title="Let’s take VGG16 as an example:"></a>Let’s take VGG16 as an example:</h4><h4 id="2-3-CRF"><a href="#2-3-CRF" class="headerlink" title="2.3 CRF"></a>2.3 CRF</h4>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/05/WSL/" rel="next" title="Weakly Supervised Learning for Classification, Localization and Segmentation">
+                <i class="fa fa-chevron-left"></i> Weakly Supervised Learning for Classification, Localization and Segmentation
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Erwin" />
+          <p class="site-author-name" itemprop="name">Erwin</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#DeepLab"><span class="nav-number">1.</span> <span class="nav-text">DeepLab</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Overall-Archetecture"><span class="nav-number">1.1.</span> <span class="nav-text">1. Overall Archetecture</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Models"><span class="nav-number">1.2.</span> <span class="nav-text">2. Models</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-DCNN-amp-amp-Atrous-Convolution"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 DCNN && Atrous Convolution</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-Atrous-Spatial-Pyramid-Pooling-2-approaches"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 Atrous Spatial Pyramid Pooling(2 approaches)</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-1-Standard-MultiScale-Processing"><span class="nav-number">1.2.2.1.</span> <span class="nav-text">2.2.1 Standard MultiScale Processing</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-2-Different-sampling-rates"><span class="nav-number">1.2.2.2.</span> <span class="nav-text">2.2.2 Different sampling rates</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Let’s-take-VGG16-as-an-example"><span class="nav-number">1.2.3.</span> <span class="nav-text">Let’s take VGG16 as an example:</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-CRF"><span class="nav-number">1.2.4.</span> <span class="nav-text">2.3 CRF</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Erwin</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>

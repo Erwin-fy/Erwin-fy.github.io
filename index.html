@@ -200,7 +200,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
-            Startseite
+            Home
           </a>
         </li>
       
@@ -210,7 +210,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
             
-            Kategorien
+            Categories
           </a>
         </li>
       
@@ -220,7 +220,7 @@
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
-            Archiv
+            Archives
           </a>
         </li>
       
@@ -262,6 +262,328 @@
   
   
 
+  <article class="post post-type-categories " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/05/DeepLab/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Erwin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/10/05/DeepLab/" itemprop="url">Weakly Supervised Learning for Classification, Localization and Segmentation</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-05T22:15:38+08:00">
+                2017-10-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="DeepLab"><a href="#DeepLab" class="headerlink" title="DeepLab"></a>DeepLab</h2><p><strong>Abstract</strong>: <strong>Deep Convolutional Nets &#160; Atrous Convolution &#160; Fully Connected CRFs</strong></p>
+<p><a href="https://arxiv.org/pdf/1606.00915.pdf" target="_blank" rel="external">Link</a></p>
+<h3 id="1-Overall-Archetecture"><a href="#1-Overall-Archetecture" class="headerlink" title="1. Overall Archetecture"></a>1. Overall Archetecture</h3><p><img src="/2017/10/05/DeepLab/DeepLab.png" alt="DeepLab"></p>
+<h3 id="2-Models"><a href="#2-Models" class="headerlink" title="2. Models"></a>2. Models</h3><h4 id="2-1-DCNN-amp-amp-Atrous-Convolution"><a href="#2-1-DCNN-amp-amp-Atrous-Convolution" class="headerlink" title="2.1 DCNN &amp;&amp; Atrous Convolution"></a>2.1 DCNN &amp;&amp; Atrous Convolution</h4><ul>
+<li><p><strong><em>DCNN</em></strong></p>
+<p> We adopt <strong><em>VGG16</em></strong> and <strong><em>ResNet101</em></strong> to extract feature. And we repalce their fully-connected layers with fully-convolutional layers.</p>
+</li>
+<li><p><strong><em>Atrous Convolution</em></strong></p>
+<p>Atrous Convolution allows us to compute feature maps more densely and enlarge the $field-of-view$ of filters.</p>
+
+</li>
+</ul>
+<p>First, consider one-dimensional signals.<br><img src="/2017/10/05/DeepLab/origin.png" alt="Original Structure"><br><img src="/2017/10/05/DeepLab/sparse.png" alt="Sparse Structure"><br><img src="/2017/10/05/DeepLab/dense.png" alt="Dense Structure"></p>
+<p>Obviously. we can see <strong><em>Atrous Convolution</em></strong> helps to resize a 3-dimensional filter to a 5-dimensional one, in fact. Compared with <strong><em>Original Structure</em></strong>, we attain mere resolution enhancement due to 1 stride in <strong>MAX Pooling Layer</strong>. Compared with <strong><em>Sparse Structure</em></strong>, the field-of-view of filters can be enlarged to the same as <strong><em>Original Structure</em></strong>.</p>
+<p>By the way, when dilation=1(rate is refered to as dilation in papaer), <strong><em>Dense Structure</em></strong> and <strong><em>Sparse Structure</em></strong> are the same.</p>
+<p>In conclusion, given a $k<em>k$ filter, Atrous Convolution can enlarge the kernel size from $k$ to $k_e=k + (k-1)</em>(dilation-1)$ without increasing the number of parameters.</p>
+<h4 id="2-2-Atrous-Spatial-Pyramid-Pooling-2-approaches"><a href="#2-2-Atrous-Spatial-Pyramid-Pooling-2-approaches" class="headerlink" title="2.2 Atrous Spatial Pyramid Pooling(2 approaches)"></a>2.2 Atrous Spatial Pyramid Pooling(2 approaches)</h4><h5 id="2-2-1-Standard-MultiScale-Processing"><a href="#2-2-1-Standard-MultiScale-Processing" class="headerlink" title="2.2.1 Standard MultiScale Processing"></a>2.2.1 Standard MultiScale Processing</h5><ul>
+<li>Three rescaled versions of the original image.</li>
+<li>Three parallel DCNN branches share the same parameters.</li>
+<li>Bilinearly interplote the feature maps to the original image resolution.</li>
+<li>Fuse 3 branches by taking maximum.</li>
+</ul>
+<h5 id="2-2-2-Different-sampling-rates"><a href="#2-2-2-Different-sampling-rates" class="headerlink" title="2.2.2 Different sampling rates"></a>2.2.2 Different sampling rates</h5><ul>
+<li>Employ multiple parallel atrous convolutional filters with different rates(dilations).</li>
+<li>Fuse them by taking SUM</li>
+</ul>
+<h4 id="Let’s-take-VGG16-as-an-example"><a href="#Let’s-take-VGG16-as-an-example" class="headerlink" title="Let’s take VGG16 as an example:"></a>Let’s take VGG16 as an example:</h4><h4 id="2-3-CRF"><a href="#2-3-CRF" class="headerlink" title="2.3 CRF"></a>2.3 CRF</h4>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-categories " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/05/WSL/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Erwin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/10/05/WSL/" itemprop="url">Weakly Supervised Learning for Classification, Localization and Segmentation</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-05T22:15:38+08:00">
+                2017-10-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="1-What-is-Weakly-Supervised-Learning"><a href="#1-What-is-Weakly-Supervised-Learning" class="headerlink" title="1. What is Weakly Supervised Learning"></a>1. What is <em>Weakly Supervised Learning</em></h2><h3 id="1-1-Localization"><a href="#1-1-Localization" class="headerlink" title="1.1 Localization"></a>1.1 Localization</h3><p>Labels in <em><strong>Weakly</strong></em> Supervised Learning: <strong>image-level class</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Image</th>
+<th style="text-align:center">Label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><img src="/2017/10/05/WSL/image.jpg" alt="Image"></td>
+<td style="text-align:center"><strong>Vehicle</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Labels in <strong>fully</strong> Supervised Learning: <strong>bbox-level</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Image</th>
+<th style="text-align:center">Label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><img src="/2017/10/05/WSL/image.jpg" alt="Image"></td>
+<td style="text-align:center"><img src="/2017/10/05/WSL/bbox.png" alt="Label"></td>
+</tr>
+</tbody>
+</table>
+<h3 id="1-2-Segmentation"><a href="#1-2-Segmentation" class="headerlink" title="1.2 Segmentation"></a>1.2 Segmentation</h3><p>Labels in <em><strong>Weakly</strong></em> Supervised Learning: image-level class,  bbox-level</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Image</th>
+<th style="text-align:center">Label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><img src="/2017/10/05/WSL/image.jpg" alt="Image"></td>
+<td style="text-align:center"><strong>Vehicle</strong>  or <img src="/2017/10/05/WSL/bbox.png" alt="Label"></td>
+</tr>
+</tbody>
+</table>
+<p>Labels in <strong>fully</strong> Supervised Learning: <strong>pixel-level</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Image</th>
+<th style="text-align:center">Label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><img src="/2017/10/05/WSL/image.jpg" alt="Image"></td>
+<td style="text-align:center"><img src="/2017/10/05/WSL/seg.png" alt="Label"></td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-Why-Weakly-Supervised-Learning"><a href="#2-Why-Weakly-Supervised-Learning" class="headerlink" title="2. Why Weakly Supervised Learning"></a>2. Why <em>Weakly Supervised Learning</em></h2><p>Obviously, easier to get data, however, lower accuracy.</p>
+<hr>
+<h1 id="Paper"><a href="#Paper" class="headerlink" title="Paper"></a>Paper</h1><h2 id="I-Learning-Deep-Features-for-Discriminative-Localization"><a href="#I-Learning-Deep-Features-for-Discriminative-Localization" class="headerlink" title="I. Learning Deep Features for Discriminative Localization"></a>I. Learning Deep Features for Discriminative Localization</h2><p>Abstract: <strong>GAP</strong>(Global Average Pooling)  &#160;  <strong>CAM</strong>(Class Activation Mapping)</p>
+<p><a href="http://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Zhou_Learning_Deep_Features_CVPR_2016_paper.pdf" target="_blank" rel="external">Link</a></p>
+<h3 id="1-Overall-Archetecture"><a href="#1-Overall-Archetecture" class="headerlink" title="1. Overall Archetecture"></a>1. Overall Archetecture</h3><p><img src="/2017/10/05/WSL/Discriminative.png" alt="Discriminative"></p>
+<h3 id="2-Class-Activation-Mapping"><a href="#2-Class-Activation-Mapping" class="headerlink" title="2. Class Activation Mapping"></a>2. Class Activation Mapping</h3><p>In the last convolutional layer($H<em>W</em>1024$), and given a unit k, we can get a  scalar $F$<sup>$k$</sup> $(F<em>k = Avg(\sum</em>{x,y}{f_k(x, y)})$ after performing <strong>Global Average Pooling</strong>. </p>
+<p>So given 1024 units, we can get a 1024-dim vector $F$. In the next fully-connected layer(the input to the softmax), we can get score for class c: $S_c = w^cF$ .</p>
+<p>And with the predicts and labels, we can compute loss using SoftmaxWithLoss, and minimize the loss we can get <strong>optimal parmeter $w$</strong>. </p>
+<p>The process is as follows:<br><img src="/2017/10/05/WSL/CAM.png" alt="CAM"></p>
+<p>For the class c, we compute <em>CAM</em> via $M<em>c = \sum</em>{k}{w_k^cf_k(x,y)}$</p>
+<h3 id="3-Localization-threshold-阈值-largest-connected-component（最大连通区域）and-upsample"><a href="#3-Localization-threshold-阈值-largest-connected-component（最大连通区域）and-upsample" class="headerlink" title="3. Localization(threshold(阈值), largest connected component（最大连通区域）and upsample)"></a>3. Localization(threshold(阈值), largest connected component（最大连通区域）and upsample)</h3><p>According to the Classification, we select top-5(or top-1) predicted categories and we get 5(or 1) Class Activation Maps.</p>
+<p>We use a simple thresholding technique to segment the heatmap. We first segment the regions of which the value is above 20% of the max value of the CAM. Then we take the bounding box that covers the largest connected component in the segmentation map. Finally we should resize the map to the same size of input.</p>
+<hr>
+<p>title: WSL<br>date: 2017-09-17 22:26:27</p>
+<h2 id="tags"><a href="#tags" class="headerlink" title="tags:"></a>tags:</h2>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/07/17/Instance-Segmentation/">
 
@@ -292,7 +614,7 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               
-                <span class="post-meta-item-text">Veröffentlicht am</span>
+                <span class="post-meta-item-text">Posted on</span>
               
               <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-17T10:44:45+08:00">
                 2017-07-17
@@ -313,7 +635,7 @@
                 <i class="fa fa-folder-o"></i>
               </span>
               
-                <span class="post-meta-item-text">in</span>
+                <span class="post-meta-item-text">In</span>
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
@@ -471,8 +793,8 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">1</span>
-                <span class="site-state-item-name">Artikel</span>
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">posts</span>
               </a>
             </div>
           
@@ -483,7 +805,7 @@
             <div class="site-state-item site-state-categories">
               <a href="/categories/index.html">
                 <span class="site-state-item-count">1</span>
-                <span class="site-state-item-name">Kategorien</span>
+                <span class="site-state-item-name">categories</span>
               </a>
             </div>
           
@@ -494,7 +816,7 @@
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
                 <span class="site-state-item-count">2</span>
-                <span class="site-state-item-name">Tags</span>
+                <span class="site-state-item-name">tags</span>
               </a>
             </div>
           
@@ -544,7 +866,7 @@
 
 
 <div class="powered-by">
-  Erstellt mit  <a class="theme-link" href="https://hexo.io">Hexo</a>
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
 </div>
 
 <div class="theme-info">
